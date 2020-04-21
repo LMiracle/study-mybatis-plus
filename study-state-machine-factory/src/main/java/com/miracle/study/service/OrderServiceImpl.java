@@ -1,13 +1,15 @@
-package com.miracle.studystatemachine.service;
+package com.miracle.study.service;
 
-import com.miracle.studystatemachine.dao.OrderDao;
-import com.miracle.studystatemachine.domian.OrderMaster;
-import com.miracle.studystatemachine.state.OrderStatus;
-import com.miracle.studystatemachine.state.OrderStatusChangeEvent;
+import com.miracle.study.dao.OrderDao;
+import com.miracle.study.domian.OrderMaster;
+import com.miracle.study.state.OrderStateMachineConfig;
+import com.miracle.study.state.OrderStatus;
+import com.miracle.study.state.OrderStatusChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
+import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.persist.StateMachinePersister;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +27,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderDao orderDao;
 
     @Autowired
-    private StateMachine<OrderStatus, OrderStatusChangeEvent> orderStateMachine;
+    private StateMachineFactory<OrderStatus, OrderStatusChangeEvent> orderStateMachineFactory;
 
     @Autowired
     private StateMachinePersister<OrderStatus, OrderStatusChangeEvent, OrderMaster> persister;
@@ -87,21 +89,26 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     private synchronized boolean sendEvent(Message<OrderStatusChangeEvent> message, OrderMaster orderMaster) {
-        boolean result = false;
-        try {
-            orderStateMachine.start();
-            //尝试恢复状态机状态
-            persister.restore(orderStateMachine, orderMaster);
-            //添加延迟用于线程安全测试
-            Thread.sleep(1000);
-            result = orderStateMachine.sendEvent(message);
-            //持久化状态机状态
-            persister.persist(orderStateMachine, orderMaster);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            orderStateMachine.stop();
+        synchronized (String.valueOf(orderMaster.getId()).intern()) {
+            boolean result = false;
+            StateMachine<OrderStatus, OrderStatusChangeEvent> orderStateMachine = orderStateMachineFactory.getStateMachine(OrderStateMachineConfig.orderStateMachineId);
+            System.out.println("id=" + orderMaster.getId() + " 状态机 orderStateMachine" + orderStateMachine);
+            try {
+                orderStateMachine.start();
+                //尝试恢复状态机状态
+                persister.restore(orderStateMachine, orderMaster);
+                System.out.println("id=" + orderMaster.getId() + " 状态机 orderStateMachine id=" + orderStateMachine.getId());
+                //添加延迟用于线程安全测试
+                Thread.sleep(1000);
+                result = orderStateMachine.sendEvent(message);
+                //持久化状态机状态
+                persister.persist(orderStateMachine, orderMaster);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                orderStateMachine.stop();
+            }
+            return result;
         }
-        return result;
     }
 }

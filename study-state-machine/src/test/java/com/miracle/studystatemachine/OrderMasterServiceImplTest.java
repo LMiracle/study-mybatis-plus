@@ -1,11 +1,14 @@
 package com.miracle.studystatemachine;
 
+import com.miracle.studystatemachine.dao.OrderDao;
+import com.miracle.studystatemachine.domian.OrderMaster;
 import com.miracle.studystatemachine.service.OrderService;
+import com.miracle.studystatemachine.state.OrderStatus;
 import lombok.extern.slf4j.Slf4j;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * @author Miracle
@@ -14,7 +17,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @Slf4j
 @SpringBootTest
-public class OrderServiceImplTest {
+public class OrderMasterServiceImplTest {
+
 
     @Autowired
     private OrderService orderService;

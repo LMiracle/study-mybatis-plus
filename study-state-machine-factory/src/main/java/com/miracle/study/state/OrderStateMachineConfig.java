@@ -1,13 +1,14 @@
-package com.miracle.studystatemachine.state;
+package com.miracle.study.state;
 
-import com.miracle.studystatemachine.dao.OrderDao;
-import com.miracle.studystatemachine.domian.OrderMaster;
+import com.miracle.study.dao.OrderDao;
+import com.miracle.study.domian.OrderMaster;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.StateMachineContext;
 import org.springframework.statemachine.StateMachinePersist;
 import org.springframework.statemachine.config.EnableStateMachine;
+import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
@@ -22,8 +23,12 @@ import java.util.EnumSet;
  * @date 2020/4/17 10:41
  */
 @Configuration
-@EnableStateMachine(name = "orderStateMachine")
+@EnableStateMachineFactory(name = "orderStateMachineFactory")
 public class OrderStateMachineConfig extends EnumStateMachineConfigurerAdapter<OrderStatus, OrderStatusChangeEvent> {
+
+
+    /**订单状态机ID*/
+    public static final String orderStateMachineId = "orderStateMachineId";
 
     @Autowired
     private OrderDao orderDao;
@@ -79,8 +84,7 @@ public class OrderStateMachineConfig extends EnumStateMachineConfigurerAdapter<O
             @Override
             public StateMachineContext<OrderStatus, OrderStatusChangeEvent> read(OrderMaster orderMaster) throws Exception {
                 //此处直接获取order中的状态，其实并没有进行持久化读取操作
-
-                return new DefaultStateMachineContext<>(orderMaster.getStatus(), null, null, null);
+                return new DefaultStateMachineContext<>(orderMaster.getStatus(), null, null, null, null, orderStateMachineId);
             }
         });
 

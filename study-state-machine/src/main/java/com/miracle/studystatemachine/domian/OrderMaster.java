@@ -11,12 +11,15 @@ import javax.persistence.*;
  */
 @Data
 @Entity
-@Table(name = "order")
-public class Order {
+@Table(name = "order_master")
+public class OrderMaster {
 
     @Id
     private Integer id;
 
+    @Transient
     private OrderStatus status;
+
+    private Integer stateId;
 
 }

@@ -1,6 +1,6 @@
-package com.miracle.studystatemachine.dao;
+package com.miracle.study.dao;
 
-import com.miracle.studystatemachine.domian.OrderMaster;
+import com.miracle.study.domian.OrderMaster;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

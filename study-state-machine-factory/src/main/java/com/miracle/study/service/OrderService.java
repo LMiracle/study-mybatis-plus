@@ -1,6 +1,6 @@
-package com.miracle.studystatemachine.service;
+package com.miracle.study.service;
 
-import com.miracle.studystatemachine.domian.OrderMaster;
+import com.miracle.study.domian.OrderMaster;
 
 import java.util.Map;
 

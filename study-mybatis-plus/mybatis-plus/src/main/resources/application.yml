@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    platform: mysql
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${db_server:192.168.1.105:3306}/${db_name:study-mybatis}?serverTimezone=CTT&characterEncoding=utf8&useUnicode=true&autoReconnect=true&allowMultiQueries=true&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL
+    username: ${db_uid:dior}
+    password: ${db_pwd:295330167QWE}
+    druid:
+      initialSize: 1 # 配置初始化大小
+      minIdle: 200 # 配置连接池中最小闲置的可用连接的个数
+      maxActive: 1000 # 配置连接池中最大可用连接的个数
+      maxWait: 60000 # 配置获取连接等待超时的时间, 单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000 # 配置间隔多久才进行一次检测, 检测需要关闭的空闲连接, 单位是毫秒
+      minEvictableIdleTimeMillis: 300000   # 配置一个连接在池中最小生存的时间, 单位是毫秒
+      validationQuery: SELECT 1
+      validationQueryTimeout: 60000
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true # 打开PSCache, 并且指定每个连接上PSCache的大小.分库分表较多的数据库，建议配置为false
+      maxPoolPreparedStatementPerConnectionSize: 20
+      maxOpenPreparedStatements: 20
+      connection-init-sqls: SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci
+
+mybatis-plus:
+  mapper-locations: classpath:com.miracle.dao/*Mapper.xml #指定映射文件
+  type-aliases-package: com.miracle.domain #别名包
+  configuration:
+    map-underscore-to-camel-case: true #开启驼峰命名
+  # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

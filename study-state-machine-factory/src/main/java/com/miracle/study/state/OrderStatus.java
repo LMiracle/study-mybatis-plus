@@ -1,4 +1,4 @@
-package com.miracle.studystatemachine.state;
+package com.miracle.study.state;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
